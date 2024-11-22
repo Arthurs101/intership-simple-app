@@ -5,7 +5,7 @@ import { View, Text, StyleSheet } from "react-native";
 const LoginScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Iniciar Sesión</Text>
     </View>
   );
 };
