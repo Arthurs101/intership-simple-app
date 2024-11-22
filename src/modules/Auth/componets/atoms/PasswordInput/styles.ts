@@ -16,5 +16,15 @@ export default StyleSheet.create({
     flex: 1,
     padding: 10,
   },
+  validationMessage: {
+    color: "red",
+    fontSize: 12,
+    paddingTop: 5,
+  },
+  inputWrapper: {
+    flex: 0,
+    width: "100%",
+    height: 120,
+  },
 
 });

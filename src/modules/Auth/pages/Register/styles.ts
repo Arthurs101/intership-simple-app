@@ -60,6 +60,15 @@ export default StyleSheet.create({
     marginBottom: 15,
     backgroundColor: "#333333",
   },
+  inputWrapper: {
+    width: "100%",
+    height: 120,
+  },
+  validationMessage: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 5,
+  },
   lowerContainer: {
     justifyContent: "flex-end",
     paddingBottom: 20,
@@ -67,19 +76,16 @@ export default StyleSheet.create({
   },
   button: {
     backgroundColor: "#0F2DCB", // Blue button background
-    padding: 30,
+    padding: 10,
+    height: 100,
+    width: "100%",
     borderRadius: 8,
     alignItems: "center",
+    justifyContent : "center"
   },
   buttonText: {
     color: "#FFFFFF", // White text
     fontSize: 20,
     fontWeight: "bold",
-  },
-  error: {
-    color: "red",
-    fontSize: 12,
-    marginTop: -10,
-    marginBottom: 10,
-  }  
+  }
 });

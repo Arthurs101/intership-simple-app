@@ -12,21 +12,33 @@ import PasswordInput from "../../componets/atoms/PasswordInput";
 import styles from "./styles";
 
 enum ActionType {
-  SET_VALUE = "SET_ATTRIBUTE",
+  SET_VALUE = "SET_VALUE",
+  SET_ERROR  = "SET_ERROR",
+  CLEAR_ERRORS = "CLEAR_ERRORS"
 }
 
 interface dataState {
+  //INPUT VALUES
   email: string;
   password: string;
   confirmPassword: string;
+
+  //PASSWORD VISIBILITIES
   showPassword: boolean;
   showPasswordConfirm: boolean;
+  
+  //VALIDATION ERRORS
+  errors:{
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }
 }
 
 interface dataAction {
   type: ActionType;
-  value: string | boolean;
-  key: keyof dataState;
+  value?: string | boolean;
+  key: keyof dataState | keyof dataState["errors"];
 }
 
 const RegisterScreen = () => {
@@ -41,6 +53,19 @@ const RegisterScreen = () => {
           ...state,
           [key]: value,
         };
+      case ActionType.SET_ERROR:
+        return {
+          ...state,
+          errors: {
+            ...state.errors, 
+            [key]: value,
+          },
+        }
+      case ActionType.CLEAR_ERRORS:
+        return {
+          ...state,
+          errors:{ email: "", password: "", confirmPassword: "" }
+        }
       default:
         return state;
     }
@@ -52,6 +77,11 @@ const RegisterScreen = () => {
     confirmPassword: "",
     showPassword: false,
     showPasswordConfirm: false,
+    errors: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   const handleInputChange = (key: keyof dataState, value: string | boolean) => {
@@ -72,15 +102,24 @@ const RegisterScreen = () => {
   });
 
   const handleRegister = async () => {
+    dispatch({
+      type :ActionType.CLEAR_ERRORS,
+      key: "errors"
+    })
     try {
       // Validate the form data with Yup
       await validationSchema.validate(state, { abortEarly: false });
       navigation.navigate("Home", { email: state.email });
     } catch (errors: any) {
       // Show validation errors as alerts
+     
       if (errors.inner) {
         errors.inner.forEach((err: any) => {
-          Alert.alert("Validation Error", err.message);
+              dispatch({
+                type: ActionType.SET_ERROR,
+                key: err.path, // This corresponds to 'email', 'password', etc.
+                value: err.message,
+              });
         });
       } else {
         Alert.alert("Validation Error", errors.message);
@@ -94,15 +133,18 @@ const RegisterScreen = () => {
       <Text style={styles.subtitle}>Crea Tu Cuenta Y Comienza A Aprender</Text>
 
       {/* Email Input */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.noMarginInput}
-          placeholder="Email"
-          placeholderTextColor="#AAAAAA"
-          value={state.email}
-          onChangeText={(value) => handleInputChange("email", value)}
-          keyboardType="email-address"
-        />
+      <View style={styles.inputWrapper}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.noMarginInput}
+            placeholder="Ingresa Tu Correo Electronico"
+            placeholderTextColor="#FFFFFF" 
+            value={state.email}
+            onChangeText={(value) => handleInputChange("email", value)}
+            keyboardType="email-address"
+          />
+        </View>
+        <Text style={styles.validationMessage}>{state.errors.email}</Text>
       </View>
 
       {/* Password Input */}
@@ -114,6 +156,7 @@ const RegisterScreen = () => {
           handleInputChange("showPassword", !state.showPassword)
         }
         placeholder="Ingresa Tu Contraseña"
+        validationMessage={state.errors.password}
       />
 
       {/* Confirm Password Input */}
@@ -125,6 +168,7 @@ const RegisterScreen = () => {
           handleInputChange("showPasswordConfirm", !state.showPasswordConfirm)
         }
         placeholder="Confirma Tu Contraseña"
+        validationMessage={state.errors.confirmPassword}
       />
 
       <Text style={styles.centeredText}>
