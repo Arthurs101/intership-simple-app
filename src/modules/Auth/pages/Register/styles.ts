@@ -42,6 +42,9 @@ export default StyleSheet.create({
     textAlign: "center",
     marginVertical: 10,
   },
+  bigText:{
+    fontSize: 20,
+  },
   link: {
     color: "#1E90FF", // Blue link color
     fontWeight: "bold",
